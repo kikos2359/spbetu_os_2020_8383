@@ -14,8 +14,8 @@ CODE SEGMENT
 		
 ROUT PROC FAR
 	jmp START_ROUT
-    INT_STACK 	dw 	100 dup (?)
-	SIGNATURE 	dw 	01984H
+    INT_STACK 	dw 	128 dup (?)
+	SIGNATURE 	dw 	7373H
     COUNT 		dw 	0
     KEEP_AX		dw 	?
 	KEEP_PSP 	dw	0
@@ -30,7 +30,9 @@ START_ROUT:
 	mov KEEP_SP, SP 
 	mov AX, seg INT_STACK 
 	mov SS, AX 
-	mov SP, 0 
+	mov AX, offset INT_STACK
+	add AX, 256 
+	mov SP, AX
 	mov AX, KEEP_AX
 	push AX
 	push BP
@@ -137,7 +139,7 @@ CHECK_ROUT PROC
 	int 21H 
 	mov SI, offset SIGNATURE
 	sub SI, offset ROUT 
-	mov AX, 01984H
+	mov AX, 7373H
 	cmp AX, ES:[BX+SI] 
 	je 	IS_LOADED
 	call SET_ROUT
